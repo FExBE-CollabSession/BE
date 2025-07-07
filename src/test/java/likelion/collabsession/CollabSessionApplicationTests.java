@@ -1,0 +1,13 @@
+package likelion.collabsession;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class CollabSessionApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
