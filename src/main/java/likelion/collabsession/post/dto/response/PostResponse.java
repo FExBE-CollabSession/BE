@@ -43,6 +43,7 @@ public class PostResponse {
         .writer(post.getWriter())
         .viewCount(post.getViewCount())
         .createdAt(post.getCreatedAt())
+        .likeCount(post.getLikeCount())
         .courseId(post.getCourse().getId())
         .build();
   }
