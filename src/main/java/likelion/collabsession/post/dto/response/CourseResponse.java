@@ -13,13 +13,11 @@ import lombok.NoArgsConstructor;
 public class CourseResponse {
   private Long id;
   private String name;
-  private String semester;
 
   public static CourseResponse fromEntity(Course course) {
     return CourseResponse.builder()
         .id(course.getId())
         .name(course.getName())
-//        .semester(course.getSemester())
         .build();
   }
 }
