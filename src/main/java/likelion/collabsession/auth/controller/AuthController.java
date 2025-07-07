@@ -54,6 +54,7 @@ public class AuthController {
     refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);  // 예: 7일
 
     response.addCookie(refreshTokenCookie);
+    response.addCookie(accessTokenCookie);
 
     return ResponseEntity.ok(BaseResponse.success("로그인에 성공했습니다.", loginResponse));
   }
