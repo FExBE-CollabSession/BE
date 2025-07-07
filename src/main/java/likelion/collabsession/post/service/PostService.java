@@ -2,6 +2,7 @@ package likelion.collabsession.post.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import likelion.collabsession.global.exception.CustomException;
 import likelion.collabsession.post.dto.request.CreatePostRequest;
 import likelion.collabsession.post.dto.request.UpdatePostRequest;
 import likelion.collabsession.post.dto.response.PostResponse;
@@ -9,6 +10,9 @@ import likelion.collabsession.post.entity.Course;
 import likelion.collabsession.post.entity.Post;
 import likelion.collabsession.post.repository.CourseRepository;
 import likelion.collabsession.post.repository.PostRepository;
+import likelion.collabsession.user.entity.User;
+import likelion.collabsession.user.exception.UserErrorCode;
+import likelion.collabsession.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,8 +24,13 @@ public class PostService {
 
   private final PostRepository postRepository;
   private final CourseRepository courseRepository;
+  private final UserRepository userRepository;
 
-  public PostResponse createPost(Long courseId, CreatePostRequest request) {
+  public PostResponse createPost(Long courseId, CreatePostRequest request, Long userId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
+
+
     log.info("[createPost] 수업 ID: {}, 제목: {}", courseId, request.getTitle());
 
     Course course = findCourse(courseId);
@@ -29,7 +38,7 @@ public class PostService {
         .title(request.getTitle())
         .content(request.getContent())
         .course(course)
-        .writer(request.getWriter())
+        .writer(user.getUsername())
         .build();
 
     Post saved = postRepository.save(post);

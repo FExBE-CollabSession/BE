@@ -6,12 +6,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import likelion.collabsession.global.response.BaseResponse;
+import likelion.collabsession.global.security.CustomUserDetails;
 import likelion.collabsession.post.dto.request.UpdatePostRequest;
 import likelion.collabsession.post.dto.request.CreatePostRequest;
 import likelion.collabsession.post.dto.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import likelion.collabsession.post.service.PostService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -34,9 +36,13 @@ public class PostController {
   @PostMapping("/{courseId}")
   public ResponseEntity<BaseResponse<PostResponse>> createPost(
       @Parameter(description = "수업 ID") @PathVariable Long courseId,
-      @Parameter(description = "게시글 작성 내용") @RequestBody CreatePostRequest createPostRequest) {
+      @Parameter(description = "게시글 작성 내용") @RequestBody CreatePostRequest createPostRequest,
+      @AuthenticationPrincipal CustomUserDetails userDetails
+      ) {
 
-    PostResponse response = postService.createPost(courseId, createPostRequest);
+    Long userId = userDetails.getUser().getId(); // ✅ email 대신 id 사용
+
+    PostResponse response = postService.createPost(courseId, createPostRequest, userId);
     return ResponseEntity.ok(BaseResponse.success("게시글 생성 성공", response));
   }
 

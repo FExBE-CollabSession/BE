@@ -1,6 +1,9 @@
 package likelion.collabsession.post.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import likelion.collabsession.comment.entity.Comment;
 import likelion.collabsession.global.common.BaseTimeEntity;
 import lombok.*;
 
@@ -40,6 +43,9 @@ public class Post extends BaseTimeEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "course_id", nullable = false)
   private Course course;
+
+  @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Comment> comments = new ArrayList<>();
 
   public void update(String title, String content) {
     this.title = title;
