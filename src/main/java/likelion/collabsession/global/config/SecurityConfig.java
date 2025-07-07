@@ -41,10 +41,15 @@ public class SecurityConfig {
             request ->
                 request
                     // Swagger 경로 인증 필요
-                    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**")
+                    .requestMatchers(
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**",
+                        "/swagger-resources/**"
+                    )
                     .permitAll()
                     // 인증 없이 허용할 경로
-                    .requestMatchers("/api/**")
+                    .requestMatchers("/api/**", "/gpt/**")
                     .permitAll()
                     // 그 외 모든 요청은 모두 인증 필요
                     .anyRequest()
