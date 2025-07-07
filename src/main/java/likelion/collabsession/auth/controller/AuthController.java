@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.time.Duration;
 import likelion.collabsession.auth.dto.request.LoginRequest;
 import likelion.collabsession.auth.dto.response.LoginResponse;
 import likelion.collabsession.auth.service.AuthService;
@@ -13,6 +14,7 @@ import likelion.collabsession.global.response.BaseResponse;
 import likelion.collabsession.user.exception.UserErrorCode;
 import likelion.collabsession.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +40,11 @@ public class AuthController {
     String refreshToken = userRepository.findByEmail(loginRequest.getEmail())
         .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND))
         .getRefreshToken();
+
+    Cookie accessTokenCookie = new Cookie("accessToken", loginResponse.getAccessToken());
+    accessTokenCookie.setHttpOnly(true);
+    accessTokenCookie.setPath("/");
+    accessTokenCookie.setMaxAge(60 * 30); // 30분
 
     // Set-Cookie 설정 (HttpOnly + Secure)
     Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
