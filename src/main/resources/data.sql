@@ -1,4 +1,4 @@
-INSERT INTO course (id, name, day_of_week, start_time, end_time, professor, classroom) VALUES
+INSERT INTO course (id, name, lecture_day, start_time, end_time, professor, classroom) VALUES
 (1, '컴퓨터공학개론',   '월',     '10:00:00', '11:30:00', '노정규',   '공학관 101호'),
 (2, '자료구조',         '화,목',   '13:00:00', '14:30:00', '김선희',   'IT관 B203'),
 (3, '운영체제',         '수',     '09:00:00', '10:30:00', '김성석',   '정보관 302호'),
