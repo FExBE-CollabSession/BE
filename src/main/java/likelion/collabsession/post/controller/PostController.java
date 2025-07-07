@@ -40,7 +40,7 @@ public class PostController {
       @AuthenticationPrincipal CustomUserDetails userDetails
       ) {
 
-    Long userId = userDetails.getUser().getId(); // ✅ email 대신 id 사용
+    Long userId = userDetails.getUser().getId();
 
     PostResponse response = postService.createPost(courseId, createPostRequest, userId);
     return ResponseEntity.ok(BaseResponse.success("게시글 생성 성공", response));

@@ -5,6 +5,7 @@ import likelion.collabsession.comment.dto.request.CreateCommentRequest;
 import likelion.collabsession.comment.dto.response.CommentResponse;
 import likelion.collabsession.comment.service.CommentService;
 import likelion.collabsession.global.response.BaseResponse;
+import likelion.collabsession.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,13 +23,11 @@ public class CommentController {
   public ResponseEntity<BaseResponse<CommentResponse>> createComment(
       @PathVariable Long postId,
       @RequestBody CreateCommentRequest request,
-      @AuthenticationPrincipal UserDetails userDetails
+      @AuthenticationPrincipal CustomUserDetails userDetails
   ) {
-    String username = userDetails.getUsername(); // 로그인한 사용자 이름
-    request.setWriter(username); // 댓글 작성자 설정
-    request.setPostId(postId);
+    String writer = userDetails.getUser().getUsername(); // 로그인한 사용자 이름
 
-    CommentResponse response = commentService.createComment(request);
+    CommentResponse response = commentService.createComment(postId, writer, request);
     return ResponseEntity.ok(BaseResponse.success(response));
   }
 
