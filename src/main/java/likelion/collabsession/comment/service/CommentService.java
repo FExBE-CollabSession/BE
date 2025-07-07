@@ -21,8 +21,8 @@ public class CommentService {
   private final CommentRepository commentRepository;
 
   @Transactional
-  public CommentResponse createComment(CreateCommentRequest request) {
-    Post post = postRepository.findById(request.getPostId())
+  public CommentResponse createComment(Long postId, String writer, CreateCommentRequest request) {
+    Post post = postRepository.findById(postId)
         .orElseThrow(() -> new CustomException(CommentErrorCode.COMMENT_NOT_FOUND));
 
     Comment parent = null;
@@ -34,7 +34,7 @@ public class CommentService {
     Comment comment = Comment.builder()
         .post(post)
         .content(request.getContent())
-        .writer(request.getWriter())
+        .writer(writer)
         .parent(parent)
         .build();
 
