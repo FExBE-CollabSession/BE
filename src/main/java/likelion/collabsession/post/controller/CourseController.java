@@ -6,7 +6,6 @@ import java.util.List;
 import likelion.collabsession.global.response.BaseResponse;
 import likelion.collabsession.global.security.CustomUserDetails;
 import likelion.collabsession.post.dto.response.CourseDetailResponse;
-import likelion.collabsession.post.dto.response.CourseResponse;
 import likelion.collabsession.post.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +31,11 @@ public class CourseController {
 
   @Operation(summary = "사용자가 등록한 수업 목록 조회", description = "현재 로그인한 사용자가 등록한 수업 목록을 반환")
   @GetMapping("/my")
-  public ResponseEntity<BaseResponse<List<CourseResponse>>> getMyCourses(
+  public ResponseEntity<BaseResponse<List<CourseDetailResponse>>> getMyCourses(
       @AuthenticationPrincipal CustomUserDetails userDetails) {
 
     Long userId = userDetails.getUser().getId();
-    List<CourseResponse> myCourses = courseService.getCoursesByUser(userId);
+    List<CourseDetailResponse> myCourses = courseService.getCoursesByUser(userId);
     return ResponseEntity.ok(BaseResponse.success("나의 수업 목록 조회 성공", myCourses));
   }
 }
