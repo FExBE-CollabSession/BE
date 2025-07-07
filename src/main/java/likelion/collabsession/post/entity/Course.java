@@ -2,7 +2,6 @@ package likelion.collabsession.post.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +28,9 @@ public class Course {
   @Schema(description = "교수명", example = "김교수")
   private String professor;
 
-  @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   @Schema(description = "수업 요일", example = "MONDAY")
-  private DayOfWeek lectureDay;
+  private String lectureDay;
 
   @Column(nullable = false)
   @Schema(description = "수업 시작 시간", example = "14:00")

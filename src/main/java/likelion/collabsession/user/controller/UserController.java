@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import likelion.collabsession.global.response.BaseResponse;
 import likelion.collabsession.global.security.CustomUserDetails;
+import likelion.collabsession.user.dto.request.AddCourseRequest;
 import likelion.collabsession.user.dto.request.SignUpRequest;
 import likelion.collabsession.user.dto.request.UpdateEmailRequest;
 import likelion.collabsession.user.dto.request.UpdatePasswordRequest;
@@ -68,5 +69,17 @@ public class UserController {
 
     UpdatePasswordResponse response = userService.updatePassword(userDetails.getUser().getId(), request);
     return ResponseEntity.ok(BaseResponse.success("비밀번호가 변경되었습니다.", response));
+  }
+
+  // 유저 시간표 추가
+  @PostMapping("/add-courses")
+  @Operation(summary = "수업 시간표 추가", description = "사용자가 선택한 수업을 자신의 시간표에 추가합니다.")
+  public ResponseEntity<BaseResponse<String>> addCourseToUser(
+      @AuthenticationPrincipal CustomUserDetails userDetails,
+      @RequestBody AddCourseRequest request) {
+
+    Long userId = userDetails.getUser().getId();
+    userService.addCourseToUser(userId, request.getCourseId());
+    return ResponseEntity.ok(BaseResponse.success("수업 추가 성공", null));
   }
 }

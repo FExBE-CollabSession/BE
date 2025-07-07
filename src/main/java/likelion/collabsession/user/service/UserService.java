@@ -1,7 +1,10 @@
 package likelion.collabsession.user.service;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import likelion.collabsession.global.exception.CustomException;
+import likelion.collabsession.post.entity.Course;
+import likelion.collabsession.post.repository.CourseRepository;
 import likelion.collabsession.user.dto.request.SignUpRequest;
 import likelion.collabsession.user.dto.request.UpdateEmailRequest;
 import likelion.collabsession.user.dto.request.UpdatePasswordRequest;
@@ -11,8 +14,10 @@ import likelion.collabsession.user.dto.response.UpdateEmailResponse;
 import likelion.collabsession.user.dto.response.UpdatePasswordResponse;
 import likelion.collabsession.user.dto.response.UpdateUsernameResponse;
 import likelion.collabsession.user.entity.User;
+import likelion.collabsession.user.entity.UserCourse;
 import likelion.collabsession.user.exception.UserErrorCode;
 import likelion.collabsession.user.mapper.UserMapper;
+import likelion.collabsession.user.repository.UserCourseRepository;
 import likelion.collabsession.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +34,8 @@ public class UserService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final UserMapper userMapper;
+  private final CourseRepository courseRepository;
+  private final UserCourseRepository userCourseRepository;
 
   // 회원가입
   public SignUpResponse signUp(SignUpRequest request) {
@@ -110,5 +117,28 @@ public class UserService {
     return UpdateUsernameResponse.builder()
         .username(user.getUsername())
         .build();
+  }
+
+  @Transactional
+  public void addCourseToUser(Long userId, Long courseId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
+
+    Course course = courseRepository.findById(courseId)
+        .orElseThrow(() -> new CustomException(UserErrorCode.COURSE_NOT_FOUND));
+
+    // 중복 수강 체크
+    boolean alreadyExists = userCourseRepository.existsByUserAndCourse(user, course);
+    if (alreadyExists) {
+      throw new CustomException(UserErrorCode.ALREADY_ENROLLED);
+    }
+
+    UserCourse userCourse = UserCourse.builder()
+        .user(user)
+        .course(course)
+        .addedAt(LocalDateTime.now())
+        .build();
+
+    userCourseRepository.save(userCourse);
   }
 }
